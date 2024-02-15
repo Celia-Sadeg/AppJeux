@@ -1,0 +1,145 @@
+/* Style pour le conteneur des cartes */
+.conteneur-sixprend {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .chat-messages {
+    height: 300px; /* Ajustez en fonction de votre mise en page */
+    overflow-y: auto; /* Permet le défilement si le contenu dépasse la hauteur */
+  }
+  
+  /* Style pour chaque ligne de positions */
+  .ligne {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px; /* Ajustez l'espace entre les lignes */
+  }
+  
+  /* Style pour chaque position de carte */
+  .position {
+    border: 2px dashed #000; /* Dashed border for empty positions */
+    width: 80px; /* Ajustez la largeur pour s'adapter aux cartes */
+    height: 120px; /* Ajustez la hauteur pour s'adapter aux cartes */
+    margin: 5px; /* Espacement autour des positions */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Mise en évidence des positions vides */
+  .position.vide {
+    background-color: #f1e5e5; /* Fond clair pour les positions vides */
+    
+}
+  
+  /* Fond différent pour les positions remplies */
+  .position:not(.vide) {
+    background-color: #914a4a; /* Fond plus sombre pour les positions remplies */
+  }
+  
+  /* Style pour la carte */
+  .carte {
+    background-color: #b79292;
+    border: 1px solide #df1111;
+    border-radius: 5px;
+    width: 60px; /* Ajustez si nécessaire pour s'adapter à l'intérieur de .position */
+    height: 90px; /* Ajustez si nécessaire pour s'adapter à l'intérieur de .position */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  /* Effet au survol des cartes */
+  .carte:hover {
+    transform: translateY(-10px);
+  }
+  
+  /* Mise en évidence de la carte sélectionnée */
+  .carte.selectionnee {
+    border: 2px solide bleu;
+  }
+  
+  /* Style pour le conteneur contenant toutes les cartes */
+  .conteneur-cartes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  
+  /* Style pour chaque carte individuelle dans le conteneur */
+  .carte-individuelle {
+    margin: 10px;
+    transition: transform 0.3s ease;
+  }
+  
+  /* Effet au survol des cartes individuelles */
+  .carte-individuelle:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* État actif des cartes individuelles */
+  .carte-individuelle:active {
+    transform: translateY(-2px);
+  }
+  
+  /* Supprimez les éventuelles définitions en conflit avec .carte */
+  .label-blanc {
+    color: white;
+  }
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 300px; /* ou la largeur que vous souhaitez */
+    height: 50vh; /* ou la hauteur que vous souhaitez */
+    background-color: #9b1a1a; /* ou toute autre couleur de fond */
+    color: white; /* couleur du texte */
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow-y: auto; /* Permettre le défilement vertical */
+  }
+  
+  .chat-messages {
+    overflow-y: auto; /* Permettre le défilement si nécessaire */
+    height: calc(100% - 40px); /* ajustez la hauteur en fonction de la taille de votre entrée */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espacement entre les messages */
+  }
+  
+  .chat-input {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .chat-input input {
+    width: calc(100% - 100px); /* ajustez la largeur en fonction de la taille de votre bouton */
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ece9e9;
+  }
+  
+  .chat-input button {
+    width: 80px; /* ou la largeur que vous souhaitez */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #2875c7; /* ou toute autre couleur de fond */
+    color: white;
+    cursor: pointer;
+  }
+  

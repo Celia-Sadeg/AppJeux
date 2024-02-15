@@ -1,0 +1,262 @@
+.user-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  max-width: 300px;
+  margin: auto;
+  border: 1px solid #f10707;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(231, 14, 14, 0.1);
+}
+
+.user-form input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ece9e9;
+}
+
+.user-form button {
+  padding: 20px 51px;
+  border: none;
+  border-radius: 65px;
+  background-color: #2875c7;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.1s ease; /* Ajoute une transition pour l'effet */
+}
+
+.user-form button:active {
+  transform: scale(0.95); /* Réduit légèrement la taille du bouton lorsqu'il est cliqué */
+}
+
+
+.user-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: ;
+  padding: 20px;
+}
+
+.user-card {
+  background-color: #ee86cd;
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.user-card p {
+  color: #121312; /* Couleur de texte modifiée pour une meilleure visibilité */
+  margin: 0;
+}
+.user-list-title {
+  background-color: rgb(18889, 207, 25); /* Couleur de fond */
+  color: white; /* Couleur du texte */
+  padding: 10px 20px; /* Espacement interne pour donner de la place au texte */
+  border-radius: 10px; /* Coins arrondis */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Ombre pour un effet en relief */
+  text-align: center; /* Texte centré */
+  width: fit-content; /* Largeur en fonction du contenu */
+  margin: auto; /* Centré horizontalement */
+  /* Autres styles si nécessaire */
+}
+
+.user-list-container h3 {
+  color: rgb(207, 93, 5); /* Définit la couleur du texte en blanc pour tous les <h3> dans user-list-container */
+}
+/* Game.css */
+.game-container {
+  background-image: url('./assets/img.png');
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-content {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 200px;
+  border-radius: 122px;
+  text-align: center;
+}
+
+.button-container {
+  margin-top: 20px;
+}
+
+.join-button, .create-button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.join-button:hover, .create-button:hover {
+  background-color: #0056b3;
+}
+/* CSS pour SixPrend.js */
+.six-prend-container {
+  display: flex;
+  align-items: center;
+  height: 100vh; /* Utiliser toute la hauteur de la vue */
+  background-color: #240827; /* Couleur de fond */
+}
+
+.table {
+  width: 60%; /* Largeur de la table */
+  height: 60%; /* Hauteur de la table */
+  border: 2px solid #333; /* Bordure de la table */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7e9f6; /* Couleur de fond de la table */
+  box-shadow: 0 4px 8px rgba(186, 168, 168, 0.1); /* Ombre pour un effet 3D */
+  padding: 20px; /* Espace intérieur */
+  margin-left: 20px; /* Marge à gauche */
+}
+
+.card {
+  width: 100px; /* Largeur des cartes */
+  height: 150px; /* Hauteur des cartes */
+  margin: 10px; /* Marge entre les cartes */
+  border: 1px solid #666; /* Bordure des cartes */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #68064e; /* Couleur de fond des cartes */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre pour les cartes */
+}
+
+.user-icon {
+  width: 50px;
+  height: 50px;
+}
+/********/
+.six-prend-container {
+  display: flex;
+  flex-direction: column; /* Organise les éléments verticalement */
+  align-items: flex-start; /* Aligner les éléments en haut */
+  width: 800vw; /* Utilisez 100% de la largeur de la fenêtre d'affichage */
+  height: 100vh; /* Utilisez 90% de la hauteur de la fenêtre d'affichage */
+  background-color: #6f1082; /* Couleur de fond */
+  justify-content: flex-start; /* Aligner le contenu au début */
+  overflow: hidden; /* Cachez tout débordement */
+}
+
+.upper-container {
+  display: flow-root;
+  justify-content: space-around;
+  width: 20%; /* Assurez-vous que le
+
+
+.table {
+  flex-grow: 2; /* Allows the game part to take the available space */
+}
+
+
+
+
+.joueur {
+  margin: 20px;
+  padding: 20px;
+  background-color: #ee1b81; /* Change to preferred bubble color */
+  border-radius: 20px; /* Rounds the corners for the bubble effect */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+  display: inline-block; /* Makes it flow like text */
+  /* Remove fixed width and height if you want different sizes for the bubbles */
+}
+
+.upper-container {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 200px;
+}
+
+
+.chat-container {
+  position: fixed;
+  top: 0; /* En haut de la page */
+  left: 70%; /* Décale le conteneur à 50% de la largeur totale de l'écran vers la droite */
+  transform: translateX(-50%); /* Décale le conteneur de 50% de sa propre largeur vers la gauche */
+  width: 300px; /* Définissez une largeur appropriée pour votre chat */
+  height: 10vh;
+  background-color: #9b1a1a;
+  overflow-y: auto;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  padding: 10px;
+  /* Ajoutez ici d'autres styles si nécessaire */
+}
+
+
+/* Positionnement de la liste des utilisateurs */
+.user-list-container {
+  position: fixed; /* Fixe la liste des utilisateurs */
+  top: 0; /* En haut de la page */
+  right: 0; /* À droite de la page, à côté du chat */
+  width: 250px; /* Ajustez la largeur si nécessaire */
+  height: 100vh; /* Hauteur totale de la fenêtre d'affichage */
+  overflow-y: auto; /* Permet le défilement vertical si la liste est longue */
+  /* Autres styles de la liste des utilisateurs... */
+}
+
+
+.top-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 100;
+  padding: 10px;
+}
+
+.player-list-container {
+  /* Appliquez des styles pour positionner et styliser la liste des joueurs */
+}
+
+
+.joueure {
+  background-color: #3498db;
+  color: #fff;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.joueure button {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.joueure button:hover {
+  background-color: #c0392b;
+}
+
+
+
