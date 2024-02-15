@@ -1,0 +1,586 @@
+//app.jsimport logo from './logo.svg'; // Assurez-vous que ce fichier existe et est correctement référencé
+import Axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import './App.css';
+
+export default function App() {
+  const [users, setUsers] = useState([]);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    Axios.get("http://localhost:3001/users")
+      .then(res => {
+        setUsers(res.data);
+      });
+  }, []);
+
+  // Fonction pour créer un utilisateur
+  const createUser = () => {
+    Axios.post("http://localhost:3001/CreateUsers", {
+      email: email,
+      password: password
+    })
+    .then(res => {
+      console.log("Réponse du serveur:", res);
+      // Vous pouvez ajouter ici une logique supplémentaire si nécessaire
+    })
+    .catch(error => {
+      console.error("Erreur lors de la création de l'utilisateur:", error);
+    });
+  };
+  
+
+  return (
+    <>
+      {users.map(user => (
+        <div className="card" key={user.id}>
+          <ul>
+            <li>email: {user.email}</li>
+          </ul>
+        </div>
+      ))}
+
+      <div className="form-container">
+        <h2>Connexion</h2>
+        <div className="mb-3">
+          <label htmlFor="loginEmail" className="form-label">Email:</label>
+          <input 
+            type="email" 
+            className="form-control" 
+            id="loginEmail" 
+            placeholder="Email" 
+            onChange={e => setEmail(e.target.value)} 
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="loginPassword" className="form-label">Mot de passe:</label>
+          <input 
+            type="password" 
+            className="form-control" 
+            id="loginPassword" 
+            placeholder="Mot de passe" 
+            onChange={e => setPassword(e.target.value)} 
+          />
+        </div>
+        <button className="btn btn-primary" onClick={createUser}>Se connecter</button>
+      </div>
+    </>
+  );
+}
+//server.js
+const express = require("express");
+const app = express();
+
+app.use(express.json());
+const cors = require("cors");
+app.use(cors());
+
+const mongoose = require("mongoose");
+const dbOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    autoReconnect: true, // Reconnexion automatique
+    reconnectTries: Number.MAX_VALUE, // Nombre de tentatives de reconnexion
+    reconnectInterval: 1000 // Intervalle entre les tentatives
+};
+
+// Connexion à la base de données
+const username = "sadeg";
+const password = "ZrbDwt4llyoNYKLV";
+const database = "dbmonjeux";
+
+// Utilisation de littéraux de gabarit pour intégrer les variables
+mongoose.connect(`mongodb+srv://${username}:${password}@${database}.yty8f5a.mongodb.net/dbprojetusers`);
+
+mongoose.connection.on("error", (error) => {
+    console.error("Erreur de connexion à la base de données:", error);
+});
+
+mongoose.connection.once("open", () => {
+    console.log("Connexion à la base de données établie avec succès");
+});
+
+const UserModel = require('./models/Users');
+
+app.get("/users", async (req, res) => {
+    if (!mongoose.connection.readyState) {
+        return res.status(503).json({ error: "Service indisponible" });
+    }
+    try {
+        const users = await UserModel.find();
+        res.json(users);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des utilisateurs :", error);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+});
+
+app.post("/CreateUsers", async (req, res) => {
+    if (!mongoose.connection.readyState) {
+        return res.status(503).json({ error: "Service indisponible" });
+    }
+    try {
+        const user = req.body;
+        const newUser = new UserModel(user);
+        await newUser.save();
+        res.json(newUser);
+    } catch (error) {
+        console.error("Erreur lors de la création de l'utilisateur :", error);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+});
+
+app.listen(3001, () => {
+    console.log("Le serveur fonctionne sur le port 3001");
+});
+ce composant gère
+ la gestion de la liste des joueurs présents,
+  -2 permission du  joueur de prendre la main
+  -1 la gestion des donnes du joueures
+  au niveau des fonctions
+  _ce composant gère la liste
+   des joueurs présents,
+  
+   permet à un joueur de prendre la main
+
+   ////server
+   const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const fs = require('fs');
+const path = require('path');
+
+const UserModel = require('./models/Users');
+// Chemin absolu vers le dossier contenant les cartes SVG
+const cartesDossier = 'C:/Users/sadeg/OneDrive/Bureau/cour fac universite de montpellier/ProjetL2/app2024/client/src/cartes';
+
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+mongoose.connect("mongodb+srv://sadeg:ZrbDwt4llyoNYKLV@dbmonjeux.yty8f5a.mongodb.net/dbprojetusers")
+    
+mongoose.connection.on("error", (error) => {
+    console.error("Erreur de connexion à la base de données:", error);
+});
+
+mongoose.connection.once("open", () => {
+    console.log("Connexion à la base de données établie avec succès");
+});
+
+// Routes pour les utilisateurs
+app.get("/users", async (req, res) => {
+    try {
+        const users = await UserModel.find({}, 'name email');
+        res.json(users);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des utilisateurs :", error);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+});
+
+app.post("/createUser", async (req, res) => {
+    try {
+        const userData = req.body;
+        // Hacher le mot de passe avant de le stocker
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        const newUser = new UserModel({ ...userData, password: hashedPassword });
+        await newUser.save();
+        res.json({ name: newUser.name, email: newUser.email }); // Ne renvoyez pas le mot de passe
+    } catch (error) {
+        console.error("Erreur lors de la création de l'utilisateur :", error);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+});
+app.post("/login", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await UserModel.findOne({ email: email });
+
+        if (user) {
+            // Si l'utilisateur est trouvé, vérifiez le mot de passe
+            if (user.password === password) {
+                // Si le mot de passe correspond
+                res.json({ name: user.name }); // Renvoie le nom de l'utilisateur
+            } else {
+                // Si le mot de passe ne correspond pas
+                res.status(401).json({ error: "Mot de passe incorrect" });
+            }
+        } else {
+            // Si l'utilisateur n'est pas trouvé
+            res.status(404).json({ error: "Email non trouvé" });
+        }
+    } catch (error) {
+        console.error("Erreur lors de la connexion :", error);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+});
+//Fonction pour générer la liste des cartes SVG disponibles
+function getListeCartes() {
+  try {
+    // Lire le contenu du dossier
+    return fs.readdirSync(cartesDossier).filter(file => file.endsWith('.svg'));
+  } catch (err) {
+    console.error(`Erreur lors de la lecture du dossier des cartes: `, err);
+    return [];
+  }
+}
+
+// Route pour afficher toutes les cartes
+app.get('/cartes', (req, res) => {
+  const cartes = getListeCartes();
+  let html = '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Cartes de Jeu</title></head><body>';
+
+  // Générer le HTML pour chaque carte
+  cartes.forEach(nomFichier => {
+    const numCarte = path.basename(nomFichier, '.svg');
+    html += `<img src="/cartes/static/${nomFichier}" alt="Carte ${numCarte}" style="margin: 10px;">`;
+  });
+
+  html += '</body></html>';
+  res.send(html);
+});
+
+// Middleware pour servir les fichiers statiques (les cartes SVG)
+app.use('/cartes/static', express.static(cartesDossier));
+
+
+
+
+
+app.listen(3001, () => {
+    console.log("Le serveur fonctionne sur le port 3001");
+});
+
+
+/////
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import Cartes from './Cartes.js';
+import './Cartes.css';
+
+function SixPrend() {
+  const [users, setUsers] = useState([]);
+  const [mainPrise, setMainPrise] = useState(null); // mainPrise stocke maintenant le nom de l'utilisateur
+
+  useEffect(() => {
+    // Récupérer la liste des utilisateurs depuis le serveur
+    fetch('http://localhost:3001/users')
+      .then(response => response.json())
+      .then(data => setUsers(data))
+      .catch(error => console.error('Erreur lors de la récupération des utilisateurs', error));
+  }, []);
+
+  const prendreLaMain = (userName) => {
+    setMainPrise(userName); // Définit le nom de l'utilisateur dans mainPrise
+  };
+
+  return (
+    <div className="six-prend-container">
+      <div className="table">
+        <h3 className="user-list-title">Liste des joueurs présents</h3>
+        {users.map(user => (
+          <div key={user._id} className="joueure">
+            {user.name}
+            {/* Ajoutez un bouton pour chaque utilisateur pour prendre la main */}
+            {!mainPrise && <button onClick={() => prendreLaMain(user.name)}>Prendre la main</button>}
+          </div>
+        ))}
+        {mainPrise && (
+          <>
+            <div>La main est prise par : {mainPrise}</div>
+            {/* Afficher le composant Cartes après que la main est prise */}
+            <Cartes />
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default SixPrend;
+
+/////////////////////////////////////////////////**********************************
+import React, { useState, useEffect } from 'react';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3001'); // Adaptez cette URL à votre serveur
+
+function SixPrend() {
+    const [message, setMessage] = useState('');
+    const [messages, setMessages] = useState([]);
+
+    useEffect(() => {
+        socket.on('chat message', (msg) => {
+            setMessages(messages => [...messages, msg]);
+        });
+
+        return () => socket.off('chat message');
+    }, []);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (message) {
+            socket.emit('chat message', message);
+            setMessage('');
+        }
+    };
+
+    return (
+        <div>
+            {/* Zone d'affichage des messages avec style CSS */}
+            <div id="messageBox" style={{ 
+                height: '300px', 
+                overflow: 'auto', 
+                border: '1px solid black', 
+                marginBottom: '10px',
+                backgroundColor: 'white', // Fond blanc ajouté ici
+                padding: '10px' // Ajout de padding pour un meilleur affichage
+            }}>
+                {messages.map((msg, index) => (
+                    <div key={index}>{msg}</div>
+                ))}
+            </div>
+            {/* Formulaire d'envoi de message */}
+            <form onSubmit={handleSubmit}>
+                <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
+                <button type="submit">Envoyer</button>
+            </form>
+        </div>
+    );
+}
+
+export default SixPrend;
+
+
+//**chat explication :
+cote client :La fonction envoyerMessage 
+
+Elle commence par vérifier deux conditions :
+
+socket: Il s'assure que la variable socket, qui représente l'instance du socket.io-client, est définie et non nulle.
+newMessage: Il vérifie si la variable newMessage, qui contient le message en cours de saisie par l'utilisateur, n'est pas vide.
+Si ces deux conditions sont remplies, cela signifie que l'utilisateur a saisi un message et qu'une connexion au serveur de chat a été établie avec succès. Dans ce cas, la fonction procède comme suit :
+
+Elle utilise la méthode emit du socket pour envoyer un événement nommé "chat message" au serveur, avec le contenu de newMessage en tant que message à envoyer.
+
+Ensuite, elle réinitialise l'état newMessage en lui attribuant une chaîne vide. Cela a pour effet de vider le champ de saisie du message, prêt à recevoir un nouveau message.
+
+En résumé, la fonction envoyerMessage permet à l'utilisateur d'envoyer un message au serveur de chat en utilisant le socket. Elle s'assure que le socket est disponible et qu'un message a été saisi, puis envoie ce message au serveur, réinitialisant le champ de saisie après l'envoi.
+ Cela permet 
+ une communication en temps 
+ réel avec les autres utilisateurs
+  via le chat.
+  ////////////////////find
+  import React, { useState, useEffect } from 'react';
+import './App.css';
+import Cartes from './Cartes.js';
+import io from 'socket.io-client';
+
+function SixPrend() {
+  const [users, setUsers] = useState([]);
+  const [mainPrise, setMainPrise] = useState(null);
+  const [nouvellePartie, setNouvellePartie] = useState({
+    identifiant: "",
+    nomDuJoueur: "",
+  });
+  const [joinGameCode, setJoinGameCode] = useState("");
+  const [joinedGame, setJoinedGame] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const newSocket = io('http://localhost:3001');
+
+    newSocket.on('chat message', (msg) => {
+      console.log('Message reçu du serveur :', msg); // Débogage
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    });
+
+    fetch('http://localhost:3001/users')
+      .then((response) => response.json())
+      .then((data) => setUsers(data))
+      .catch((error) =>
+        console.error('Erreur lors de la récupération des utilisateurs', error)
+      );
+
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
+
+  const envoyerMessage = () => {
+    if (socket && newMessage) {
+      console.log('Envoi du message au serveur :', newMessage); // Débogage
+      socket.emit('chat message', newMessage);
+      setNewMessage('');
+    }
+  };
+
+  const prendreLaMain = (userName) => {
+    setMainPrise(userName);
+  };
+
+  const creerNouvellePartie = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:3001/mesparties", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(nouvellePartie),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Partie créée avec succès !");
+        setNouvellePartie({
+          identifiant: data.identifiant, // Utilisez l'identifiant renvoyé par le serveur
+          nomDuJoueur: "",
+          // Réinitialisez les autres détails de la partie ici...
+        });
+      } else {
+        console.error("Erreur lors de la création de la partie.");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la création de la partie :", error);
+    }
+  };
+
+  const rejoindrePartie = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/mesparties/${joinGameCode}`);
+      if (response.ok) {
+        const data = await response.json();
+        setJoinedGame(data);
+      } else {
+        console.error("Erreur lors de la récupération de la partie existante.");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération de la partie existante :", error);
+    }
+  };
+
+  const connecterJoueur = (joueur) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user._id === joueur._id ? { ...user, joueurConnecte: true } : user
+      )
+    );
+  };
+  
+  const deconnecterJoueur = (joueur) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user._id === joueur._id ? { ...user, joueurConnecte: false } : user
+      )
+    );
+  };
+  
+  return (
+    <div className="six-prend-container">
+      <form onSubmit={creerNouvellePartie}>
+        <label>Nom du joueur :</label>
+        <input
+          type="text"
+          value={nouvellePartie.nomDuJoueur}
+          onChange={(e) =>
+            setNouvellePartie({ ...nouvellePartie, nomDuJoueur: e.target.value })
+          }
+          required
+        />
+        <label>Identifiant de la partie :</label>
+        <input
+          type="text"
+          value={nouvellePartie.identifiant}
+          onChange={(e) =>
+            setNouvellePartie({ ...nouvellePartie, identifiant: e.target.value })
+          }
+          required
+        />
+        {/* Ajoutez d'autres champs pour les détails de la partie ici */}
+        <button type="submit">Créer la partie</button>
+      </form>
+
+      <div className="table">
+        <h3 className="user-list-title">Liste des joueurs présents</h3>
+        {users.map((user) => (
+          <div key={user._id} className="joueur">
+            {user.name}
+            {user.joueurConnecte ? (
+              <>
+                <button onClick={() => deconnecterJoueur(user)}>Déconnecter</button>
+                {!mainPrise && (
+                  <button onClick={() => prendreLaMain(user.name)}>Prendre la main</button>
+                )}
+              </>
+            ) : (
+              <button onClick={() => connecterJoueur(user)}>Connecter</button>
+            )}
+          </div>
+        ))}
+
+        {/* Affichez le formulaire pour rejoindre une partie existante */}
+        <div>
+          <h3>Rejoindre une partie existante</h3>
+          <label>Code d'identifiant de la partie :</label>
+          <input
+            type="text"
+            value={joinGameCode}
+            onChange={(e) => setJoinGameCode(e.target.value)}
+            required
+          />
+          <button onClick={rejoindrePartie}>Rejoindre la partie</button>
+        </div>
+
+        {mainPrise && (
+          <>
+            <div>La main est prise par : {mainPrise}</div>
+            {/* Afficher le composant Cartes après que la main est prise */}
+            <Cartes />
+          </>
+        )}
+
+        {/* Afficher les détails de la partie rejointe */}
+        {joinedGame && (
+          <div>
+            <h3>Partie Rejointe</h3>
+            <p>Identifiant de la Partie : {joinedGame.identifiant}</p>
+            <p>Joueur : {joinedGame.nomDuJoueur}</p>
+            {/* Afficher d'autres détails de la partie ici */}
+          </div>
+        )}
+      </div>
+
+      {/* Chat en direct */}
+      <div className="chat-container">
+        <h3>Chat en direct</h3>
+        <div className="chat-messages">
+          {messages.map((message, index) => (
+            <div key={index} className="chat-message">
+              {message}
+            </div>
+          ))}
+        </div>
+        <div className="chat-input">
+          <input
+            type="text"
+            placeholder="Tapez votre message..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
+          <button onClick={envoyerMessage}>Envoyer</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default SixPrend;
